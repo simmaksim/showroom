@@ -1,0 +1,26 @@
+version: '3.9'
+services:  
+  db:
+    image: postgres:12
+    # volumes:
+    #   - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=showroom
+      - POSTGRES_USER=simmaksim
+      - POSTGRES_PASSWORD=MSlizh2001
+    ports:
+      - '5432:5432'
+  
+  backend:
+    container_name: backend
+    build:
+      context: ""
+      dockerfile: Dockerfile
+    command:  bash -c "python /showroom/manage.py migrate --noinput &&
+              python /showroom/manage.py  runserver 0.0.0.0:8000"
+    ports:
+      - '8000:8000'
+    env_file:
+      - .env.dev
+    depends_on:
+      - db
