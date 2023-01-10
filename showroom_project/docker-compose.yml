@@ -5,20 +5,19 @@ services:
     image: postgres:14
     container_name: db
     volumes:
-      - ./data/postgres/:/var/lib/postgresql/data/ 
+      - postgres_data:/var/lib/postgresql/data/ 
     # environment:
     #   - POSTGRES_DB=showroom
     #   - POSTGRES_USER=simmaksim
     #   - POSTGRES_PASSWORD=MSlizh2001
     env_file:
       - .env.dev
-    expose:
-      - "5432"
     ports:
-      - '5432:5432'
+      - "5432:5432"
     
   
   backend:
+    restart: always
     container_name: backend
     build:
       context: ""
@@ -31,3 +30,7 @@ services:
       - .env.dev
     depends_on:
       - db
+
+  
+volumes:
+  postgres_data:
