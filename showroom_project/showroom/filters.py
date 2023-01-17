@@ -4,13 +4,13 @@ from .models import Car, Client, Provider, SaleHistory, Showroom
 
 
 class CarFilter(FilterSet):
-    year = NumberFilter(field_name="year", lookup_expr="exact")
-    brand = CharFilter(field_name="brand", lookup_expr="exact")
-    model = CharFilter(field_name="model", lookup_expr="exact")
+    year = NumberFilter(field_name="year", lookup_expr="icontains")
+    brand = CharFilter(field_name="brand", lookup_expr="icontains")
+    model = CharFilter(field_name="model", lookup_expr="icontains")
     vin = CharFilter(field_name="vin", lookup_expr="exact")
-    power = NumberFilter(field_name="power", lookup_expr="exact")
-    color = CharFilter(field_name="color", lookup_expr="exact")
-    body = CharFilter(field_name="body", lookup_expr="exact")
+    power = NumberFilter(field_name="power", lookup_expr="icontains")
+    color = CharFilter(field_name="color", lookup_expr="icontains")
+    body = CharFilter(field_name="body", lookup_expr="icontains")
 
     class Meta:
         model = Car
@@ -21,7 +21,7 @@ class ClientFilter(FilterSet):
     name = CharFilter(field_name="name", lookup_expr="icontains")
     surname = CharFilter(field_name="surname", lookup_expr="icontains")
     balance = NumberFilter(field_name="balance", lookup_expr="exact")
-    location = CharFilter(field_name="location", lookup_expr="exact")
+    location = CharFilter(field_name="location", lookup_expr="icontains")
 
     class Meta:
         model = Client
@@ -30,7 +30,7 @@ class ClientFilter(FilterSet):
 
 class ShowroomFilter(FilterSet):
     name = CharFilter(field_name="name", lookup_expr="icontains")
-    location = CharFilter(field_name="location", lookup_expr="exact")
+    location = CharFilter(field_name="location", lookup_expr="icontains")
     balance = NumberFilter(field_name="balance", lookup_expr="exact")
     unique_clients = ModelChoiceFilter(
         field_name="unique_clients", queryset=Client.objects.all()
@@ -44,9 +44,9 @@ class ShowroomFilter(FilterSet):
 class SaleHistoryFilter(FilterSet):
     min_price = NumberFilter(field_name="price", lookup_expr="gte")
     max_price = NumberFilter(field_name="price", lookup_expr="lte")
-    car = CharFilter(field_name="car__name", lookup_expr="iexact")
-    client = CharFilter(field_name="client__name", lookup_expr="iexact")
-    showroom = CharFilter(field_name="showroom__name", lookup_expr="iexact")
+    car = CharFilter(field_name="car__name", lookup_expr="icontains")
+    client = CharFilter(field_name="client__name", lookup_expr="icontains")
+    showroom = CharFilter(field_name="showroom__name", lookup_expr="icontains")
 
     class Meta:
         model = SaleHistory
@@ -57,8 +57,8 @@ class ProviderFilter(FilterSet):
     min_clients_count = NumberFilter(field_name="clients_count", lookup_expr="gte")
     max_clients_count = NumberFilter(field_name="clients_count", lookup_expr="lte")
     name = CharFilter(lookup_expr="icontains")
-    location = CharFilter(lookup_expr="iexact")
-    car = CharFilter(field_name="cars__name", lookup_expr="iexact")
+    location = CharFilter(lookup_expr="icontains")
+    car = CharFilter(field_name="cars__name", lookup_expr="icontains")
 
     class Meta:
         model = Provider
