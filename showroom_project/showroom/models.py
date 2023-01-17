@@ -39,7 +39,8 @@ class Car(CreateUpdate):
         pickup = "PU", ("Pickup")
         minivan = "MV", ("Minivan")
 
-    body = models.CharField(max_length=20, choices=Bodies.choices, default=Bodies.sedan)
+    body = models.CharField(
+        max_length=20, choices=Bodies.choices, default=Bodies.sedan)
 
     def __str__(self):
         return f"{self.year} {self.brand} {self.model} {self.vin} {self.power} {self.color} {self.body} {self.is_active} {self.created} {self.updated}"
