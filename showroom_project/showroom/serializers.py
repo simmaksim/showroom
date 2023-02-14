@@ -53,6 +53,7 @@ class ShowroomSerializer(serializers.ModelSerializer):
             "created",
             "updated",
         ]
+        read_only_fields = ["balance", "is_active", "created", "updated",]
 
 
 class SaleHistorySerializer(serializers.ModelSerializer):

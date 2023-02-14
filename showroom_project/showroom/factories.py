@@ -6,7 +6,6 @@ from .models import Car, Client, Provider, Showroom
 
 
 class CarFactory(DjangoModelFactory):
-
     year = factory.Faker("random_int", min=1940, max=2024)
     brand = factory.Faker(
         "random_element", elements=["VW", "Volvo", "Audi", "BMW", "Mercedes"]
@@ -25,7 +24,6 @@ class CarFactory(DjangoModelFactory):
 
 
 class ClientFactory(DjangoModelFactory):
-
     name = Faker("first_name")
     surname = Faker("last_name")
     balance = factory.Faker("random_int", min=0, max=10000000)
@@ -55,10 +53,10 @@ class ShowroomFactory(DjangoModelFactory):
 
 
 class ProviderFactory(DjangoModelFactory):
-    class Meta:
-        model = Provider
-
     name = Faker("name")
     location = Faker("country_code")
     clients_count = Faker("random_int", min=0, max=1000)
     cars = factory.RelatedFactoryList(CarFactory)
+
+    class Meta:
+        model = Provider
