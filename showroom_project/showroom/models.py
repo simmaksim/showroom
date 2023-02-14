@@ -6,7 +6,6 @@ from .abstract_models import CreateUpdate
 
 
 class Car(CreateUpdate):
-
     year = models.IntegerField(
         validators=[MinValueValidator(1940), MaxValueValidator(2024)]
     )
@@ -44,10 +43,11 @@ class Car(CreateUpdate):
         return f"{self.year} {self.brand} {self.model} {self.vin} {self.power} {self.color} {self.body} {self.is_active} {self.created} {self.updated}"
 
 
-class User(CreateUpdate):
+class Client(CreateUpdate):
     name = models.CharField(max_length=50)
     surname = models.CharField(max_length=50)
     balance = models.DecimalField(
+        default=0,
         max_digits=10, decimal_places=2, validators=[MinValueValidator(0)]
     )
     location = CountryField()
@@ -60,10 +60,11 @@ class Showroom(CreateUpdate):
     name = models.CharField(max_length=50)
     location = CountryField()
     balance = models.DecimalField(
+        default=0,
         max_digits=10, decimal_places=2, validators=[MinValueValidator(0)]
     )
-    unique_users = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="unique_members"
+    unique_clients = models.ForeignKey(
+        Client, on_delete=models.CASCADE, related_name="unique_clients"
     )
     criteries = models.JSONField(
         blank=True,
@@ -79,7 +80,7 @@ class Showroom(CreateUpdate):
     cars = models.ManyToManyField(Car, through="ShowroomCar")
 
     def __str__(self):
-        return f"{self.name} {self.location} {self.balance} {self.unique_members} {self.criteries} {self.is_active} "
+        return f"{self.name} {self.location} {self.balance} {self.unique_clients} {self.criteries} {self.is_active} "
 
 
 class Provider(CreateUpdate):
@@ -94,26 +95,27 @@ class Provider(CreateUpdate):
 
 class SaleHistory(CreateUpdate):
     price = models.DecimalField(
+        default=0,
         max_digits=10, decimal_places=2, validators=[MinValueValidator(0)]
     )
     car = models.ForeignKey(
         Car, on_delete=models.CASCADE, related_name="sale_history_cars"
     )
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="sale_history_users"
+    client = models.ForeignKey(
+        Client, on_delete=models.CASCADE, related_name="sale_history_clients", null=True
     )
     showroom = models.ForeignKey(
         Showroom, on_delete=models.CASCADE, related_name="sale_history_showrooms"
     )
 
     def __str__(self):
-        return f"{self.price} {self.car} {self.user} {self.showroom} {self.is_active} {self.created} {self.updated}"
+        return f"{self.price} {self.car} {self.client} {self.showroom} {self.is_active} {self.created} {self.updated}"
 
 
 class ShowroomCar(models.Model):
-    cars_count = models.IntegerField(validators=[MinValueValidator(0)])
+    cars_count = models.IntegerField(default=0, validators=[MinValueValidator(0)])
     price = models.DecimalField(
-        max_digits=10, decimal_places=2, validators=[MinValueValidator(0)]
+        default=0, max_digits=10, decimal_places=2, validators=[MinValueValidator(0)]
     )
     showroom = models.ForeignKey(
         Showroom, on_delete=models.CASCADE, related_name="showroom_car_showrooms"
@@ -127,9 +129,9 @@ class ShowroomCar(models.Model):
 
 
 class ProviderCar(models.Model):
-    cars_count = models.IntegerField(validators=[MinValueValidator(0)])
+    cars_count = models.IntegerField(default=0, validators=[MinValueValidator(0)])
     price = models.DecimalField(
-        max_digits=10, decimal_places=2, validators=[MinValueValidator(0)]
+        default=0, max_digits=10, decimal_places=2, validators=[MinValueValidator(0)]
     )
     provider = models.ForeignKey(
         Provider, on_delete=models.CASCADE, related_name="provider_car_providers"
