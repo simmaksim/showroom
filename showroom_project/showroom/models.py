@@ -47,8 +47,7 @@ class Client(CreateUpdate):
     name = models.CharField(max_length=50)
     surname = models.CharField(max_length=50)
     balance = models.DecimalField(
-        default=0,
-        max_digits=10, decimal_places=2, validators=[MinValueValidator(0)]
+        default=0, max_digits=10, decimal_places=2, validators=[MinValueValidator(0)]
     )
     location = CountryField()
 
@@ -60,8 +59,7 @@ class Showroom(CreateUpdate):
     name = models.CharField(max_length=50)
     location = CountryField()
     balance = models.DecimalField(
-        default=0,
-        max_digits=10, decimal_places=2, validators=[MinValueValidator(0)]
+        default=0, max_digits=10, decimal_places=2, validators=[MinValueValidator(0)]
     )
     unique_clients = models.ForeignKey(
         Client, on_delete=models.CASCADE, related_name="unique_clients"
@@ -87,29 +85,60 @@ class Provider(CreateUpdate):
     name = models.CharField(max_length=50)
     clients_count = models.IntegerField(default=0)
     location = CountryField()
+    balance = models.DecimalField(
+        default=0, max_digits=10, decimal_places=2, validators=[MinValueValidator(0)]
+    )
     cars = models.ManyToManyField(Car, through="ProviderCar")
 
     def __str__(self):
-        return f"{self.name}  {self.clients_count} {self.location} {self.is_active} {self.created} {self.updated}"
+        return f"{self.name}  {self.clients_count} {self.location} {self.balance} {self.is_active} {self.created} {self.updated}"
 
 
-class SaleHistory(CreateUpdate):
+class ShowroomSaleHistory(CreateUpdate):
     price = models.DecimalField(
-        default=0,
-        max_digits=10, decimal_places=2, validators=[MinValueValidator(0)]
+        default=0, max_digits=10, decimal_places=2, validators=[MinValueValidator(0)]
     )
     car = models.ForeignKey(
-        Car, on_delete=models.CASCADE, related_name="sale_history_cars"
+        Car, on_delete=models.CASCADE, related_name="showroom_sale_history_cars"
     )
     client = models.ForeignKey(
-        Client, on_delete=models.CASCADE, related_name="sale_history_clients", null=True
+        Client,
+        on_delete=models.CASCADE,
+        related_name="showroom_sale_history_clients",
+        null=True,
     )
     showroom = models.ForeignKey(
-        Showroom, on_delete=models.CASCADE, related_name="sale_history_showrooms"
+        Showroom,
+        on_delete=models.CASCADE,
+        related_name="showroom_sale_history_showrooms",
     )
 
     def __str__(self):
         return f"{self.price} {self.car} {self.client} {self.showroom} {self.is_active} {self.created} {self.updated}"
+
+
+class ProviderSaleHistory(CreateUpdate):
+
+    price = models.DecimalField(
+        default=0, max_digits=10, decimal_places=2, validators=[MinValueValidator(0)]
+    )
+    car = models.ForeignKey(
+        Car, on_delete=models.CASCADE, related_name="provider_sale_history_cars"
+    )
+    showroom = models.ForeignKey(
+        Showroom,
+        on_delete=models.CASCADE,
+        related_name="provider_sale_history_clients",
+        null=True,
+    )
+    provider = models.ForeignKey(
+        Provider,
+        on_delete=models.CASCADE,
+        related_name="provider_sale_history_providers",
+    )
+
+    def __str__(self):
+        return f"{self.price} {self.car} {self.showroom} {self.provider} {self.is_active} {self.created} {self.updated}"
 
 
 class ShowroomCar(models.Model):
@@ -125,7 +154,7 @@ class ShowroomCar(models.Model):
     )
 
     def __str__(self):
-        return f"{self.cars_count} {self.price} {self.showroom} {self.car} {self.created} {self.updated}"
+        return f"{self.cars_count} {self.price} {self.showroom} {self.car} "
 
 
 class ProviderCar(models.Model):
@@ -141,7 +170,7 @@ class ProviderCar(models.Model):
     )
 
     def __str__(self):
-        return f"{self.cars_count} {self.price} {self.provider} {self.car} {self.created} {self.updated}"
+        return f"{self.cars_count} {self.price} {self.provider} {self.car} "
 
 
 class ShowroomSales(CreateUpdate):

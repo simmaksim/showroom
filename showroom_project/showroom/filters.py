@@ -1,6 +1,13 @@
 from django_filters import CharFilter, FilterSet, ModelChoiceFilter, NumberFilter
 
-from .models import Car, Client, Provider, SaleHistory, Showroom
+from .models import (
+    Car,
+    Client,
+    Provider,
+    ProviderSaleHistory,
+    Showroom,
+    ShowroomSaleHistory,
+)
 
 
 class CarFilter(FilterSet):
@@ -41,7 +48,7 @@ class ShowroomFilter(FilterSet):
         fields = ["name", "location", "balance", "unique_clients"]
 
 
-class SaleHistoryFilter(FilterSet):
+class ShowroomSaleHistoryFilter(FilterSet):
     min_price = NumberFilter(field_name="price", lookup_expr="gte")
     max_price = NumberFilter(field_name="price", lookup_expr="lte")
     car = CharFilter(field_name="car__name", lookup_expr="icontains")
@@ -49,8 +56,20 @@ class SaleHistoryFilter(FilterSet):
     showroom = CharFilter(field_name="showroom__name", lookup_expr="icontains")
 
     class Meta:
-        model = SaleHistory
+        model = ShowroomSaleHistory
         fields = ["min_price", "max_price", "car", "client", "showroom"]
+
+
+class ProviderSaleHistoryFilter(FilterSet):
+    min_price = NumberFilter(field_name="price", lookup_expr="gte")
+    max_price = NumberFilter(field_name="price", lookup_expr="lte")
+    car = CharFilter(field_name="car__name", lookup_expr="icontains")
+    provider = CharFilter(field_name="provider__name", lookup_expr="icontains")
+    showroom = CharFilter(field_name="showroom__name", lookup_expr="icontains")
+
+    class Meta:
+        model = ProviderSaleHistory
+        fields = ["min_price", "max_price", "car", "provider", "showroom"]
 
 
 class ProviderFilter(FilterSet):

@@ -149,3 +149,5 @@ GitHub.sublime-settings
 data/
 htmlcov/
 .idea/
+celerybeat-schedule
+static/
