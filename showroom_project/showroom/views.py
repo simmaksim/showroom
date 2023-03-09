@@ -1,27 +1,30 @@
 # Create your views here.
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import generics, permissions, viewsets
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework import permissions, viewsets
 
 from .filters import (
     CarFilter,
     ClientFilter,
     ProviderFilter,
-    SaleHistoryFilter,
+    ProviderSaleHistoryFilter,
     ShowroomFilter,
+    ShowroomSaleHistoryFilter,
 )
-from .models import Car, Client, Provider, SaleHistory, Showroom
-from .permissions import (
-    CanEditPermission,
-    IsClientPermission,
-    IsProviderPermission,
-    IsShowroomPermission,
+from .models import (
+    Car,
+    Client,
+    Provider,
+    ProviderSaleHistory,
+    Showroom,
+    ShowroomSaleHistory,
 )
+from .permissions import CanEditPermission, IsClientPermission
 from .serializers import (
     CarSerializer,
     ClientSerializer,
+    ProviderSaleHistorySerializer,
     ProviderSerializer,
-    SaleHistorySerializer,
+    ShowroomSaleHistorySerializer,
     ShowroomSerializer,
 )
 
@@ -31,7 +34,6 @@ class CarViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_class = CarFilter
     queryset = Car.objects.all()
-    permission_classes = [permissions.AllowAny]
 
     def get_permissions(self):
         if self.request.method == "GET":
@@ -76,14 +78,28 @@ class ShowroomViewSet(viewsets.ModelViewSet):
         instance.save()
 
 
-class SaleHistoryViewSet(viewsets.ModelViewSet):
-    queryset = SaleHistory.objects.all()
-    serializer_class = SaleHistorySerializer
+class ShowroomSaleHistoryViewSet(viewsets.ModelViewSet):
+    queryset = ShowroomSaleHistory.objects.all()
+    serializer_class = ShowroomSaleHistorySerializer
     permission_classes = [
         permissions.IsAdminUser,
     ]
     filter_backends = [DjangoFilterBackend]
-    filterset_class = SaleHistoryFilter
+    filterset_class = ShowroomSaleHistoryFilter
+
+    def perform_destroy(self, instance):
+        instance.is_active = False
+        instance.save()
+
+
+class ProviderSaleHistoryViewSet(viewsets.ModelViewSet):
+    queryset = ProviderSaleHistory.objects.all()
+    serializer_class = ProviderSaleHistorySerializer
+    permission_classes = [
+        permissions.IsAdminUser,
+    ]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ProviderSaleHistoryFilter
 
     def perform_destroy(self, instance):
         instance.is_active = False

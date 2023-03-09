@@ -1,6 +1,13 @@
 from rest_framework import serializers
 
-from .models import Car, Client, Provider, SaleHistory, Showroom
+from .models import (
+    Car,
+    Client,
+    Provider,
+    ProviderSaleHistory,
+    Showroom,
+    ShowroomSaleHistory,
+)
 
 
 class CarSerializer(serializers.ModelSerializer):
@@ -53,17 +60,37 @@ class ShowroomSerializer(serializers.ModelSerializer):
             "created",
             "updated",
         ]
-        read_only_fields = ["balance", "is_active", "created", "updated",]
+        read_only_fields = [
+            "balance",
+            "is_active",
+            "created",
+            "updated",
+        ]
 
 
-class SaleHistorySerializer(serializers.ModelSerializer):
+class ShowroomSaleHistorySerializer(serializers.ModelSerializer):
     class Meta:
-        model = SaleHistory
+        model = ShowroomSaleHistory
         fields = [
             "price",
             "car",
             "client",
             "showroom",
+            "is_active",
+            "created",
+            "updated",
+        ]
+        read_only_fields = ["is_active", "created", "updated"]
+
+
+class ProviderSaleHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProviderSaleHistory
+        fields = [
+            "price",
+            "car",
+            "showroom",
+            "provider",
             "is_active",
             "created",
             "updated",
@@ -78,6 +105,7 @@ class ProviderSerializer(serializers.ModelSerializer):
             "name",
             "clients_count",
             "location",
+            "balance",
             "is_active",
             "created",
             "updated",
